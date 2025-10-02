@@ -2,13 +2,20 @@
 
 namespace App\Providers;
 
+use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
 use App\Services\LoggerService\LoggerManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @method withMiddleware(\Closure $param)
+ */
 class LoggerServiceProvider extends ServiceProvider
 {
     /**
@@ -24,28 +31,68 @@ class LoggerServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        DB::listen(function ($query) {
+        Http::macro('withLog', function () {
 
-            if(App::bound(LoggerManager::class)){
-                //Todo: Inke slow hast ya na to to db set nakon chon astaneye tashkhis slow mitoone taghyir kone
-//                $slowQueryThresholdConfig = config('logger_service.slow_query_threshold');
-                /**
-                 * @var LoggerManager $logger
-                 */
-                $logger = App::make(LoggerManager::class);
+            return $this->withMiddleware(function (callable $handler) {
 
-                $queryLogDataObject = new QueryLogData();
+                return function (RequestInterface $request, array $options) use ($handler) {
 
-                $queryLogDataObject->fromArray([
-                    'trace_id' => request()->header('trace_id'),
-                    'user_id' => request()->user()?->id,
-                    'query' => $query->sql,
-                    'duration' => $query->time,
-                ]);
+                    $response = $handler($request, $options);
+                    $startTime = Carbon::now();
 
-                $logger->queryLog($queryLogDataObject);
-            }
+                    return $response->then(
+
+                        function (ResponseInterface $response) use ($request, $startTime) {
+
+                            $logger = LoggerManager::makeInstance();
+
+                            $externalServiceLogDataObject = new ExternalServiceLogData();
+
+                            $url = $request->getUri()->getHost() . $request->getUri()->getPath();
+                            $duration = (int)$startTime->diffInUTCMilliseconds(Carbon::now());
+
+                            $externalServiceLogDataObject->fromArray([
+                                'trace_id' => request()->header('trace_id'),
+                                'user_id' => request()->user()?->id,
+                                'url' => $url,
+                                'method' => $request->getMethod(),
+                                'request_headers' => json_encode($request->getHeaders(), JSON_UNESCAPED_UNICODE),
+                                'request_payload' => $request->getBody()->getContents(),
+                                'status_code' => $response->getStatusCode(),
+                                'response_headers' => json_encode($response->getHeaders(), JSON_UNESCAPED_UNICODE),
+                                'response_data' => $response->getBody()->getContents(),
+                                'duration' => $duration,
+                            ]);
+
+                            $logger->externalServiceLog($externalServiceLogDataObject);
+
+                            return $response;
+
+                        }
+                    );
+
+                };
+            });
 
         });
+
+//        DB::listen(function ($query) {
+////            if(App::bound(LoggerManager::class)){
+//
+//                $logger = LoggerManager::makeInstance();
+//
+//                $queryLogDataObject = new QueryLogData();
+//
+//                $queryLogDataObject->fromArray([
+//                    'trace_id' => request()->header('trace_id'),
+//                    'user_id' => request()->user()?->id,
+//                    'query' => $query->sql,
+//                    'duration' => $query->time,
+//                ]);
+//
+//                $logger->queryLog($queryLogDataObject);
+////            }
+//
+//        });
     }
 }

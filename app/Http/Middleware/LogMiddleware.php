@@ -7,6 +7,8 @@ use App\Services\LoggerService\DataObjects\HttpRequestLogData;
 use App\Services\LoggerService\Factories\BoosterModeLoggerFactory;
 use App\Services\LoggerService\Factories\DefaultModeLoggerFactory;
 use App\Services\LoggerService\LoggerManager;
+use App\Services\LoggerService\Strategies\BoosterModeLogger;
+use App\Services\LoggerService\Strategies\DefaultModeLogger;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
@@ -19,26 +21,9 @@ class LogMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $traceId = Str::ulid()->toString();
-        $request->headers->set('trace-id',$traceId);
+        request()->headers->set('trace-id',$traceId);
 
-        $loggerMode = config('logger_service.mode');
-
-        if ($loggerMode === LoggerStrategy::DEFAULT_LOGGER_STRATEGY) {
-            $factory = new DefaultModeLoggerFactory($traceId);
-        } else {
-            $factory = new BoosterModeLoggerFactory($traceId);
-        }
-
-        $loggerStrategy = $factory->makeInstance();
-
-        if (!App::bound(LoggerManager::class)) {
-            App::singleton(LoggerManager::class, fn () => new LoggerManager($loggerStrategy));
-        }
-
-        /**
-         * @var LoggerManager $logger
-         */
-        $logger = App::make(LoggerManager::class);
+        $logger = LoggerManager::makeInstance();
 
         $logDataObject = $this->makeHttpRequestLogData($request, $traceId);
 
@@ -85,15 +70,15 @@ class LogMiddleware
     public function terminate(Request $request, Response $response): void
     {
         if (App::bound(LoggerManager::class)) {
-            /**
-             * @var LoggerManager $logger
-             */
-            $logger = App::make(LoggerManager::class);
+
+            $logger = LoggerManager::makeInstance();
 
             //Todo: Make data object class and update response in db
             $logger->finishLogSession();
 
             App::forgetInstance(LoggerManager::class); //Todo: Test kon bebin kar mikone?
+            App::forgetInstance(DefaultModeLogger::class); //Todo: Test kon bebin kar mikone?
+            App::forgetInstance(BoosterModeLogger::class); //Todo: Test kon bebin kar mikone?
         }
     }
 }

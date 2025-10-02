@@ -7,6 +7,7 @@ use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DefaultModeLogger extends Logger
@@ -14,17 +15,24 @@ class DefaultModeLogger extends Logger
 
     public static function userHttpRequestLog(HttpRequestLogData $data): void
     {
+//        $dataArray = array_diff($data->toArray(), ['id']);
+//        DB::table('http_request_logs')->insert($dataArray);
         $serialized = json_encode($data->toArray(), JSON_UNESCAPED_UNICODE);
-        Log::info("[User Request Log]: $serialized");
+        Log::info("[Http Request Log]: $serialized");
     }
 
     public static function externalServiceLog(ExternalServiceLogData $data): void
     {
-        // TODO: Implement externalServiceLog() method.
+//        $dataArray = array_diff($data->toArray(), ['id']);
+//        DB::table('external_service_logs')->insert($dataArray);
+        $serialized = json_encode($data->toArray(), JSON_UNESCAPED_UNICODE);
+        Log::info("[External Service Log]: $serialized");
     }
 
     public static function queryLog(QueryLogData $data): void
     {
+//        $dataArray = array_diff($data->toArray(), ['id']);
+//        DB::table('query_logs')->insert($dataArray);
         $serialized = json_encode($data->toArray(), JSON_UNESCAPED_UNICODE);
         Log::info("[Query Log]: $serialized");
     }
@@ -36,7 +44,8 @@ class DefaultModeLogger extends Logger
 
     public static function exceptionLog(ExceptionLogData $data): void
     {
-        // TODO: Implement exceptionLog() method.
+        $serialized = json_encode($data->toArray(), JSON_UNESCAPED_UNICODE);
+        Log::info("[Exception Log]: $serialized");
     }
 
     public static function finishLogSession(): void

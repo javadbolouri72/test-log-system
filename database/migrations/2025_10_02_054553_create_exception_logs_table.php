@@ -16,7 +16,6 @@ return new class extends Migration
             $table->ulid('trace_id')->nullable()->index();
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('exception')->index();
-            $table->text('message');
             $table->longText('trace');
             $table->string('file');
             $table->unsignedSmallInteger('line');

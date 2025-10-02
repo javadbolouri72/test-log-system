@@ -2,24 +2,54 @@
 
 namespace App\Services\LoggerService;
 
+use App\Enum\LoggerStrategy;
 use App\Services\LoggerService\DataObjects\CommandLogData;
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
+use App\Services\LoggerService\Factories\BoosterModeLoggerFactory;
+use App\Services\LoggerService\Factories\DefaultModeLoggerFactory;
 use App\Services\LoggerService\Strategies\Logger;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
-class LoggerManager
+readonly class LoggerManager
 {
     public function __construct(
         private Logger $strategy
     ) {}
 
-    // Niazi be taghyire strategy dar farayand nist
-//    public function changeStrategy(Logger $strategy): void
-//    {
-//        $this->strategy = $strategy;
-//    }
+    public static function makeInstance(): self
+    {
+        $traceId = request()->header('trace-id');
+
+        if (empty($traceId)) {
+            $traceId = Str::ulid()->toString();
+        }
+
+        $loggerMode = config('logger_service.mode');
+
+        if ($loggerMode === LoggerStrategy::DEFAULT_LOGGER_STRATEGY) {
+            $factory = new DefaultModeLoggerFactory($traceId);
+        } else {
+            $factory = new BoosterModeLoggerFactory($traceId);
+        }
+
+        $loggerStrategy = $factory->makeInstance();
+
+        if (!App::bound(self::class)) {
+            App::singleton(self::class, fn () => new self($loggerStrategy));
+        }
+
+        /**
+         * @var self $logger
+         */
+        $logger = App::make(self::class);
+
+        return $logger;
+    }
 
     public function userHttpRequestLog(HttpRequestLogData $data): void
     {
