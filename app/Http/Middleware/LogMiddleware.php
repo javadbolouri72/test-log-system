@@ -6,11 +6,10 @@ use App\Enum\LoggerStrategy;
 use App\Services\LoggerService\Factories\BoosterModeLoggerFactory;
 use App\Services\LoggerService\Factories\DefaultModeLoggerFactory;
 use App\Services\LoggerService\LoggerManager;
-use App\Services\LoggerService\Strategies\DefaultModeLogger;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
-use Laravel\Pail\LoggerFactory;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogMiddleware
@@ -22,8 +21,6 @@ class LogMiddleware
 
         $loggerMode = config('logger_service.mode');
 
-        //Todo: use laravel singleton for logger
-
         if ($loggerMode === LoggerStrategy::DEFAULT_LOGGER_STRATEGY) {
             $factory = new DefaultModeLoggerFactory($traceId);
         } else {
@@ -32,7 +29,17 @@ class LogMiddleware
 
         $loggerStrategy = $factory->makeInstance();
 
-        $logger = new LoggerManager($loggerStrategy);
+        if (!App::bound(LoggerManager::class)) {
+            App::singleton(LoggerManager::class, fn () => new LoggerManager($loggerStrategy));
+        }
+
+        /**
+         * @var LoggerManager $logger
+         */
+        $logger = App::make(LoggerManager::class);
+
+        //Todo: Make data object class and start log session
+
         $logger->startLogSession();
 
         return $next($request);
@@ -40,18 +47,15 @@ class LogMiddleware
 
     public function terminate(Request $request, Response $response): void
     {
-          //trace id inja lazem nist
-//        $traceId = $request->header('trace-id');
+        if (App::bound(LoggerManager::class)) {
+            /**
+             * @var LoggerManager $logger
+             */
+            $logger = App::make(LoggerManager::class);
+            //Todo: Make data object class and update response in db
+            $logger->finishLogSession();
 
-        //Todo: use laravel singleton for resolve logger
-//        $logger = new LoggerManager($loggerStrategy);
-//
-//        $logger->finishLogSession();
+            //Todo: Remove logger singleton from service container
+        }
     }
-
-//    private function makeHttpRequestLogData(Request $request)
-//    {
-//
-//        return HttpRequestDataObject;
-//    }
 }
