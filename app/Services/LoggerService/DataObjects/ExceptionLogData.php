@@ -6,21 +6,19 @@ use Carbon\Carbon;
 
 class ExceptionLogData
 {
-    public function __construct(
-        private int|null $id = null,
-        private string $traceId,
-        private int|null $userId = null,
-        private string $exception,
-        private string $message,
-        private string $trace,
-        private string $file,
-        private int $line,
-        private Carbon $startedAt,
-        private Carbon $finishedAt,
-        private int $duration,
-        private Carbon $createdAt,
-        private Carbon $updatedAt
-    ){}
+    private int|null $id = null;
+    private string $traceId;
+    private int|null $userId = null;
+    private string $exception;
+    private string $message;
+    private string $trace;
+    private string $file;
+    private int $line;
+    private Carbon $startedAt;
+    private Carbon $finishedAt;
+    private int $duration;
+    private Carbon $createdAt;
+    private Carbon $updatedAt;
 
     public function __clone()
     {
@@ -36,9 +34,9 @@ class ExceptionLogData
      */
     public function fromArray(array $data): void
     {
-        $this->id = $data["id"];
+        $this->id = $data["id"] ?? null;
         $this->traceId = $data["trace_id"];
-        $this->userId = $data["user_id"];
+        $this->userId = $data["user_id"] ?? null;
         $this->exception = $data["exception"];
         $this->message = $data["message"];
         $this->trace = $data["trace"];

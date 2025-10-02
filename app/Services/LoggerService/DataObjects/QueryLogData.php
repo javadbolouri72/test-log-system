@@ -6,17 +6,15 @@ use Carbon\Carbon;
 
 class QueryLogData
 {
-    public function __construct(
-        private int|null $id = null,
-        private string $traceId,
-        private int|null $userId = null,
-        private string $query,
-        private Carbon $startedAt,
-        private Carbon $finishedAt,
-        private int $duration,
-        private Carbon $createdAt,
-        private Carbon $updatedAt
-    ){}
+    private int|null $id = null;
+    private string $traceId;
+    private int|null $userId = null;
+    private string $query;
+    private Carbon $startedAt;
+    private Carbon $finishedAt;
+    private int $duration;
+    private Carbon $createdAt;
+    private Carbon $updatedAt;
 
     public function __clone()
     {
@@ -32,9 +30,9 @@ class QueryLogData
      */
     public function fromArray(array $data): void
     {
-        $this->id = $data["id"];
+        $this->id = $data["id"] ?? null;
         $this->traceId = $data["trace_id"];
-        $this->userId = $data["user_id"];
+        $this->userId = $data["user_id"] ?? null;
         $this->query = $data["query"];
         $this->startedAt = $data["started_at"];
         $this->finishedAt = $data["finished_at"];

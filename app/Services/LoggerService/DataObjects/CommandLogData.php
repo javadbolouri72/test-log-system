@@ -7,17 +7,15 @@ use Carbon\Carbon;
 
 class CommandLogData
 {
-    public function __construct(
-        private int|null $id = null,
-        private string $traceId,
-        private int|null $userId = null,
-        private string $command,
-        private Carbon $startedAt,
-        private Carbon $finishedAt,
-        private int $duration,
-        private Carbon $createdAt,
-        private Carbon $updatedAt
-    ){}
+    private int|null $id = null;
+    private string $traceId;
+    private int|null $userId = null;
+    private string $command;
+    private Carbon $startedAt;
+    private Carbon $finishedAt;
+    private int $duration;
+    private Carbon $createdAt;
+    private Carbon $updatedAt;
 
     public function __clone()
     {
@@ -33,9 +31,9 @@ class CommandLogData
      */
     public function fromArray(array $data): void
     {
-        $this->id = $data["id"];
+        $this->id = $data["id"] ?? null;
         $this->traceId = $data["trace_id"];
-        $this->userId = $data["user_id"];
+        $this->userId = $data["user_id"] ?? null;
         $this->command = $data["command"];
         $this->startedAt = $data["started_at"];
         $this->finishedAt = $data["finished_at"];

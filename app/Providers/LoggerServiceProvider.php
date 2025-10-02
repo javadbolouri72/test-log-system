@@ -22,24 +22,24 @@ class LoggerServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        DB::listen(function ($query) {
-
-            if(App::bound(LoggerManager::class)){
-
-                $slowQueryThresholdConfig = config('logger_service.slow_query_threshold');
-
-                /**
-                 * @var LoggerManager $logger
-                 */
-                $logger = App::make(LoggerManager::class);
-
-                //Todo: Make data object for query log
-
-                $logger->queryLog();
-
-//                dd($slowQueryThresholdConfig, $query);
-            }
-
-        });
+//        DB::listen(function ($query) {
+//
+//            if(App::bound(LoggerManager::class)){
+//
+////                $slowQueryThresholdConfig = config('logger_service.slow_query_threshold');
+//
+//                /**
+//                 * @var LoggerManager $logger
+//                 */
+//                $logger = App::make(LoggerManager::class);
+//
+//                //Todo: Make data object for query log
+//
+//                $logger->queryLog();
+//
+////                dd($slowQueryThresholdConfig, $query);
+//            }
+//
+//        });
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\TestController;
+use App\Http\Middleware\LogMiddleware;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::middleware(LogMiddleware::class)->get('/', [TestController::class, "index"]);

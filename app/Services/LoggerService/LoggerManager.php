@@ -2,6 +2,11 @@
 
 namespace App\Services\LoggerService;
 
+use App\Services\LoggerService\DataObjects\CommandLogData;
+use App\Services\LoggerService\DataObjects\ExceptionLogData;
+use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
+use App\Services\LoggerService\DataObjects\HttpRequestLogData;
+use App\Services\LoggerService\DataObjects\QueryLogData;
 use App\Services\LoggerService\Strategies\Logger;
 
 class LoggerManager
@@ -16,29 +21,29 @@ class LoggerManager
 //        $this->strategy = $strategy;
 //    }
 
-    public function startLogSession(): void
+    public function userHttpRequestLog(HttpRequestLogData $data): void
     {
-        $this->strategy->startLogSession();
+        $this->strategy->userHttpRequestLog($data);
     }
 
-    public function externalServiceLog(): void
+    public function externalServiceLog(ExternalServiceLogData $data): void
     {
-        $this->strategy->externalServiceLog();
+        $this->strategy->externalServiceLog($data);
     }
 
-    public function queryLog(): void
+    public function queryLog(QueryLogData $data): void
     {
-        $this->strategy->queryLog();
+        $this->strategy->queryLog($data);
     }
 
-    public function commandLog(): void
+    public function commandLog(CommandLogData $data): void
     {
-        $this->strategy->commandLog();
+        $this->strategy->commandLog($data);
     }
 
-    public function exceptionLog(): void
+    public function exceptionLog(ExceptionLogData $data): void
     {
-        $this->strategy->exceptionLog();
+        $this->strategy->exceptionLog($data);
     }
 
     public function finishLogSession(): void

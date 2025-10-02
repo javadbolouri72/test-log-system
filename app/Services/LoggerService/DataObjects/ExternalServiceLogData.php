@@ -6,23 +6,21 @@ use Carbon\Carbon;
 
 class ExternalServiceLogData
 {
-    public function __construct(
-        private int|null $id = null,
-        private string $traceId,
-        private int|null $userId = null,
-        private string $url,
-        private string $method,
-        private string|null $requestHeaders,
-        private string|null $requestPayload,
-        private string $statusCode,
-        private string|null $responseHeaders,
-        private string|null $responseData,
-        private Carbon $startedAt,
-        private Carbon $finishedAt,
-        private int $duration,
-        private Carbon $createdAt,
-        private Carbon $updatedAt
-    ){}
+    private int|null $id = null;
+    private string $traceId;
+    private int|null $userId = null;
+    private string $url;
+    private string $method;
+    private string|null $requestHeaders;
+    private string|null $requestPayload;
+    private string $statusCode;
+    private string|null $responseHeaders;
+    private string|null $responseData;
+    private Carbon $startedAt;
+    private Carbon $finishedAt;
+    private int $duration;
+    private Carbon $createdAt;
+    private Carbon $updatedAt;
 
     public function __clone()
     {
@@ -38,16 +36,16 @@ class ExternalServiceLogData
      */
     public function fromArray(array $data): void
     {
-        $this->id = $data["id"];
+        $this->id = $data["id"] ?? null;
         $this->traceId = $data["trace_id"];
-        $this->userId = $data["user_id"];
+        $this->userId = $data["user_id"] ?? null;
         $this->url = $data["url"];
         $this->method = $data["method"];
-        $this->requestHeaders = $data["request_headers"];
-        $this->requestPayload = $data["request_payload"];
+        $this->requestHeaders = $data["request_headers"] ?? null;
+        $this->requestPayload = $data["request_payload"] ?? null;
         $this->statusCode = $data["status_code"];
-        $this->responseHeaders = $data["response_headers"];
-        $this->responseData = $data["response_data"];
+        $this->responseHeaders = $data["response_headers"] ?? null;
+        $this->responseData = $data["response_data"] ?? null;
         $this->startedAt = $data["started_at"];
         $this->finishedAt = $data["finished_at"];
         $this->duration = $data["duration"];
