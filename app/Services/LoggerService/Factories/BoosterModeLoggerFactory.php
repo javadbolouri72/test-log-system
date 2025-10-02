@@ -7,8 +7,19 @@ use App\Services\LoggerService\Strategies\Logger;
 
 class BoosterModeLoggerFactory extends LoggerFactory
 {
+    /**
+     * @return Logger
+     */
     protected function createLoggerClass(): Logger
     {
         return new BoosterModeLogger($this->traceId);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getLoggerClassName(): string
+    {
+        return BoosterModeLogger::class;
     }
 }
