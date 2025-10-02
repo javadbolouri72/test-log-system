@@ -14,16 +14,12 @@ class ExceptionLogData
     private string $trace;
     private string $file;
     private int $line;
-    private Carbon $startedAt;
-    private Carbon $finishedAt;
     private int $duration;
     private Carbon $createdAt;
     private Carbon $updatedAt;
 
     public function __clone()
     {
-        $this->startedAt = clone $this->startedAt;
-        $this->finishedAt = clone $this->finishedAt;
         $this->createdAt = clone $this->createdAt;
         $this->updatedAt = clone $this->updatedAt;
     }
@@ -42,11 +38,9 @@ class ExceptionLogData
         $this->trace = $data["trace"];
         $this->file = $data["file"];
         $this->line = $data["line"];
-        $this->startedAt = $data["started_at"];
-        $this->finishedAt = $data["finished_at"];
         $this->duration = $data["duration"];
-        $this->createdAt = $data["created_at"];
-        $this->updatedAt = $data["updated_at"];
+        $this->createdAt = $data["created_at"] ?? Carbon::now();
+        $this->updatedAt = $data["updated_at"] ?? Carbon::now();
     }
 
     /**
@@ -63,8 +57,6 @@ class ExceptionLogData
             "trace" => $this->trace,
             "file" => $this->file,
             "line" => $this->line,
-            "started_at" => $this->startedAt,
-            "finished_at" => $this->finishedAt,
             "duration" => $this->duration,
             "created_at" => $this->createdAt,
             "updated_at" => $this->updatedAt,

@@ -16,16 +16,12 @@ class ExternalServiceLogData
     private string $statusCode;
     private string|null $responseHeaders;
     private string|null $responseData;
-    private Carbon $startedAt;
-    private Carbon $finishedAt;
     private int $duration;
     private Carbon $createdAt;
     private Carbon $updatedAt;
 
     public function __clone()
     {
-        $this->startedAt = clone $this->startedAt;
-        $this->finishedAt = clone $this->finishedAt;
         $this->createdAt = clone $this->createdAt;
         $this->updatedAt = clone $this->updatedAt;
     }
@@ -46,11 +42,9 @@ class ExternalServiceLogData
         $this->statusCode = $data["status_code"];
         $this->responseHeaders = $data["response_headers"] ?? null;
         $this->responseData = $data["response_data"] ?? null;
-        $this->startedAt = $data["started_at"];
-        $this->finishedAt = $data["finished_at"];
         $this->duration = $data["duration"];
-        $this->createdAt = $data["created_at"];
-        $this->updatedAt = $data["updated_at"];
+        $this->createdAt = $data["created_at"] ?? Carbon::now();
+        $this->updatedAt = $data["updated_at"] ?? Carbon::now();
     }
 
     /**
@@ -69,8 +63,6 @@ class ExternalServiceLogData
             "status_code" => $this->statusCode,
             "response_headers" => $this->responseHeaders,
             "response_data" => $this->responseData,
-            "started_at" => $this->startedAt,
-            "finished_at" => $this->finishedAt,
             "duration" => $this->duration,
             "created_at" => $this->createdAt,
             "updated_at" => $this->updatedAt,

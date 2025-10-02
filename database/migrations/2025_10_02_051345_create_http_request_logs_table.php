@@ -24,8 +24,6 @@ return new class extends Migration
             $table->string('status_code', 3)->nullable();
             $table->text('response_headers')->nullable();
             $table->longText('response_data')->nullable();
-            $table->dateTime('started_at');
-            $table->dateTime('finished_at')->nullable();
             $table->unsignedSmallInteger('duration')->nullable(); // in milliseconds
             $table->timestamps();
 

@@ -16,8 +16,6 @@ return new class extends Migration
             $table->ulid('trace_id')->nullable()->index();
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('command')->index();
-            $table->dateTime('started_at');
-            $table->dateTime('finished_at');
             $table->unsignedSmallInteger('duration'); // in milliseconds
             $table->timestamps();
 

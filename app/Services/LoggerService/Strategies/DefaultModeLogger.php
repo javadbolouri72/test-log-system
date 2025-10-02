@@ -7,13 +7,15 @@ use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
+use Illuminate\Support\Facades\Log;
 
 class DefaultModeLogger extends Logger
 {
 
     public static function userHttpRequestLog(HttpRequestLogData $data): void
     {
-        // TODO: Implement userHttpRequestLog() method.
+        $serialized = json_encode($data->toArray(), JSON_UNESCAPED_UNICODE);
+        Log::info("[User Request Log]: $serialized");
     }
 
     public static function externalServiceLog(ExternalServiceLogData $data): void
@@ -23,7 +25,8 @@ class DefaultModeLogger extends Logger
 
     public static function queryLog(QueryLogData $data): void
     {
-        // TODO: Implement queryLog() method.
+        $serialized = json_encode($data->toArray(), JSON_UNESCAPED_UNICODE);
+        Log::info("[Query Log]: $serialized");
     }
 
     public static function commandLog(CommandLogData $data): void

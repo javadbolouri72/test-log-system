@@ -53,9 +53,7 @@ class LogMiddleware
 
         $controller = isset($action['controller']) ? $action["controller"] : 'NA';
 
-        $now = Carbon::now();
-
-        // Ettefaghe ajib ro check kon chera injoori kar nemikone :|
+        //Todo: Ettefaghe ajib ro check kon chera injoori kar nemikone :)
 //        return (new HttpRequestLogData())->fromArray([
 //            'trace_id' => $traceId,
 //            'user_id' => $request->user()?->id,
@@ -65,7 +63,6 @@ class LogMiddleware
 //            'ip' => $request->ip(),
 //            'request_headers' => json_encode($request->headers->all(), JSON_UNESCAPED_UNICODE),
 //            'request_payload' => json_encode($request->all(), JSON_UNESCAPED_UNICODE),
-//            'started_at' => $now,
 //            'created_at' => $now,
 //            'updated_at' => $now,
 //        ]);
@@ -81,9 +78,6 @@ class LogMiddleware
             'ip' => $request->ip(),
             'request_headers' => json_encode($request->headers->all(), JSON_UNESCAPED_UNICODE),
             'request_payload' => json_encode($request->all(), JSON_UNESCAPED_UNICODE),
-            'started_at' => $now,
-            'created_at' => $now,
-            'updated_at' => $now,
         ]);
 
         return $httpRequestLogDataObject;
@@ -95,10 +89,10 @@ class LogMiddleware
              * @var LoggerManager $logger
              */
             $logger = App::make(LoggerManager::class);
+
             //Todo: Make data object class and update response in db
             $logger->finishLogSession();
 
-            //Todo: Remove logger singleton from service container
             App::forgetInstance(LoggerManager::class); //Todo: Test kon bebin kar mikone?
         }
     }
