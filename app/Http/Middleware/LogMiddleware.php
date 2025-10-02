@@ -56,6 +56,7 @@ class LogMiddleware
             $logger->finishLogSession();
 
             //Todo: Remove logger singleton from service container
+            App::forgetInstance(LoggerManager::class); //Todo: Test kon bebin kar mikone?
         }
     }
 }
