@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
-use App\Services\LoggerService\LoggerManager;
+use App\Services\LoggerService\LoggerContextManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -43,7 +43,7 @@ class LoggerServiceProvider extends ServiceProvider
 
                         function (ResponseInterface $response) use ($request, $startTime) {
 
-                            $logger = LoggerManager::instance();
+                            $logger = LoggerContextManager::instance();
 
                             $externalServiceLogDataObject = new ExternalServiceLogData();
 
@@ -87,7 +87,7 @@ class LoggerServiceProvider extends ServiceProvider
                 }
             }
 
-            $logger = LoggerManager::instance();
+            $logger = LoggerContextManager::instance();
 
             $queryLogDataObject = new QueryLogData();
 

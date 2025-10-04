@@ -12,14 +12,13 @@ use App\Services\LoggerService\Factories\BoosterModeLoggerFactory;
 use App\Services\LoggerService\Factories\DefaultModeLoggerFactory;
 use App\Services\LoggerService\Strategies\Logger;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
 
-readonly class LoggerManager
+final readonly class LoggerContextManager
 {
     private const GLOBAL_INSTANCE_POSTFIX = ":Global";
     public function __construct(
         private Logger $strategy
-    ) {}
+    ){}
 
     public static function instance(): self
     {

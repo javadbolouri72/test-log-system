@@ -1,7 +1,7 @@
 <?php
 
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
-use App\Services\LoggerService\LoggerManager;
+use App\Services\LoggerService\LoggerContextManager;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->report(function (\Throwable $exception) {
-            $logger = LoggerManager::instance();
+            $logger = LoggerContextManager::instance();
 
             $exceptionLogDataObject = new ExceptionLogData();
 

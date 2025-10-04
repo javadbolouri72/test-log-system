@@ -6,7 +6,7 @@ use App\Enum\LoggerStrategy;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
 use App\Services\LoggerService\Factories\BoosterModeLoggerFactory;
 use App\Services\LoggerService\Factories\DefaultModeLoggerFactory;
-use App\Services\LoggerService\LoggerManager;
+use App\Services\LoggerService\LoggerContextManager;
 use App\Services\LoggerService\Strategies\BoosterModeLogger;
 use App\Services\LoggerService\Strategies\DefaultModeLogger;
 use Carbon\Carbon;
@@ -23,7 +23,7 @@ class LogMiddleware
         $traceId = Str::ulid()->toString();
         request()->headers->set('trace-id',$traceId);
 
-        $logger = LoggerManager::instance();
+        $logger = LoggerContextManager::instance();
 
         $logDataObject = $this->makeHttpRequestLogData($request, $traceId);
 
@@ -55,7 +55,7 @@ class LogMiddleware
     }
     public function terminate(Request $request, Response $response): void
     {
-        $logger = LoggerManager::instance();
+        $logger = LoggerContextManager::instance();
 
         //Todo: make finish session data
 

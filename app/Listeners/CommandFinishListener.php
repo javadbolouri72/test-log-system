@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Services\LoggerService\DataObjects\CommandLogData;
-use App\Services\LoggerService\LoggerManager;
+use App\Services\LoggerService\LoggerContextManager;
 use Carbon\Carbon;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,7 +32,7 @@ class CommandFinishListener
         $commandStartedAt = Carbon::parse($cachedCommandTime);
         $duration = (int)$commandStartedAt->diffInUTCMilliseconds($now);
 
-        $logger = LoggerManager::instance();
+        $logger = LoggerContextManager::instance();
 
         $commandLogDataObject = new CommandLogData();
 

@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\LoggerService\LoggerManager;
+use App\Services\LoggerService\LoggerContextManager;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
