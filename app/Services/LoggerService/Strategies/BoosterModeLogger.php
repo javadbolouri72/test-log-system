@@ -2,13 +2,14 @@
 
 namespace App\Services\LoggerService\Strategies;
 
+use App\Services\LoggerService\Contracts\Persistable;
 use App\Services\LoggerService\DataObjects\CommandLogData;
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
 
-class BoosterModeLogger extends Logger
+class BoosterModeLogger extends Logger implements Persistable
 {
 
     public static function userHttpRequestLog(HttpRequestLogData $data): void
@@ -39,5 +40,10 @@ class BoosterModeLogger extends Logger
     public static function finishLogSession(): void
     {
         // TODO: Implement finishLogSession() method.
+    }
+
+    public static function persistData(): void
+    {
+        // TODO: Implement persistData() method.
     }
 }

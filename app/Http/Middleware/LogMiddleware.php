@@ -2,17 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Enum\LoggerStrategy;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
-use App\Services\LoggerService\Factories\BoosterModeLoggerFactory;
-use App\Services\LoggerService\Factories\DefaultModeLoggerFactory;
 use App\Services\LoggerService\LoggerContextManager;
 use App\Services\LoggerService\Strategies\BoosterModeLogger;
-use App\Services\LoggerService\Strategies\DefaultModeLogger;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -57,8 +51,9 @@ class LogMiddleware
     {
         $logger = LoggerContextManager::instance();
 
-        //Todo: make finish session data
-
-        $logger->finishLogSession();
+        if ($logger->getStrategy() instanceof BoosterModeLogger) {
+            //Todo: make finish session data
+            $logger->getStrategy()->persistData();
+        }
     }
 }

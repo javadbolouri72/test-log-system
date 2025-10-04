@@ -8,7 +8,6 @@ use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class DefaultModeLogger extends Logger
 {
@@ -35,11 +34,7 @@ class DefaultModeLogger extends Logger
 
     public static function exceptionLog(ExceptionLogData $data): void
     {
-//        DB::connection('logging')->table('exception_logs')->insert($data->toArray());
+        DB::connection('logging')->table('exception_logs')->insert($data->toArray());
     }
 
-    public static function finishLogSession(): void
-    {
-        // TODO: Implement finishLogSession() method.
-    }
 }

@@ -19,7 +19,4 @@ abstract class Logger
     abstract public static function commandLog(CommandLogData $data): void;
 
     abstract public static function exceptionLog(ExceptionLogData $data): void;
-
-//    abstract public static function classTracerLog(): void;
-    abstract public static function finishLogSession(): void;
 }
