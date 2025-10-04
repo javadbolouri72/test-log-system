@@ -30,12 +30,12 @@ class DefaultModeLogger extends Logger
 
     public static function commandLog(CommandLogData $data): void
     {
-        // TODO: Implement commandLog() method.
+        DB::connection('logging')->table('command_logs')->insert($data->toArray());
     }
 
     public static function exceptionLog(ExceptionLogData $data): void
     {
-        DB::connection('logging')->table('exception_logs')->insert($data->toArray());
+//        DB::connection('logging')->table('exception_logs')->insert($data->toArray());
     }
 
     public static function finishLogSession(): void

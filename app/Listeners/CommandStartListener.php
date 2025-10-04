@@ -2,10 +2,11 @@
 
 namespace App\Listeners;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Console\Events\CommandStarting;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class CommandStartListener
 {
@@ -22,6 +23,7 @@ class CommandStartListener
      */
     public function handle(CommandStarting $event): void
     {
-        Log::info("Command starting" . $event->command);
+        $traceId = request()->headers->has('trace_id') ? request()->headers->get('trace_id') : 'NA';
+        Cache::set("{$traceId}_command_duration_$event->command", Carbon::now());
     }
 }

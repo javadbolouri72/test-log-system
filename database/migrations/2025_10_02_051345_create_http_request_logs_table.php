@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('status_code', 3)->nullable();
             $table->text('response_headers')->nullable();
             $table->longText('response_data')->nullable();
-            $table->unsignedSmallInteger('duration')->nullable(); // in milliseconds
+            $table->unsignedBigInteger('duration')->nullable()->comment('In milliseconds');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

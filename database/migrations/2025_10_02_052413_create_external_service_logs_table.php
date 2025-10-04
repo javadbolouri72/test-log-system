@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('status_code', 3);
             $table->text('response_headers')->nullable();
             $table->longText('response_data')->nullable();
-            $table->unsignedSmallInteger('duration'); // in milliseconds
+            $table->unsignedBigInteger('duration')->comment('In milliseconds');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

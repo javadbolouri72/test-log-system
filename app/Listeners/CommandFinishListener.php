@@ -2,10 +2,13 @@
 
 namespace App\Listeners;
 
+use App\Services\LoggerService\DataObjects\CommandLogData;
+use App\Services\LoggerService\LoggerManager;
+use Carbon\Carbon;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class CommandFinishListener
 {
@@ -22,6 +25,27 @@ class CommandFinishListener
      */
     public function handle(CommandFinished $event): void
     {
-        Log::info("Command finished" . $event->command);
+        $now = Carbon::now();
+        $traceId = request()->headers->has('trace_id') ? request()->headers->get('trace_id') : 'NA';
+        $cachedCommandTime = Cache::set("{$traceId}_command_duration_$event->command", $now);
+
+        $commandStartedAt = Carbon::parse($cachedCommandTime);
+        $duration = (int)$commandStartedAt->diffInUTCMilliseconds($now);
+
+        $logger = LoggerManager::makeInstance();
+
+        $commandLogDataObject = new CommandLogData();
+
+        $commandLogDataObject->fromArray([
+            'trace_id' => request()->header('trace_id'),
+            'user_id' => request()->user()?->id,
+            'command' => $event->command,
+            'duration' => $duration,
+            'input' => json_encode($event->input, JSON_UNESCAPED_UNICODE),
+            'output' => json_encode($event->output, JSON_UNESCAPED_UNICODE),
+            'exit_code' => $event->exitCode,
+        ]);
+
+        $logger->commandLog($commandLogDataObject);
     }
 }

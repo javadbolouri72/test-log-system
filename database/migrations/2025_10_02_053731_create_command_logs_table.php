@@ -16,7 +16,10 @@ return new class extends Migration
             $table->ulid('trace_id')->nullable()->index();
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('command')->index();
-            $table->unsignedSmallInteger('duration'); // in milliseconds
+            $table->string('input')->nullable();
+            $table->string('output')->nullable();
+            $table->tinyInteger('exit_code')->default(0);
+            $table->unsignedBigInteger('duration')->comment('In milliseconds');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
