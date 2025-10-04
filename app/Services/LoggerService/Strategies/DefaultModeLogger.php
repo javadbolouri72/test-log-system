@@ -10,7 +10,7 @@ use App\Services\LoggerService\DataObjects\PersistLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
 use Illuminate\Support\Facades\DB;
 
-class DefaultModeLogger extends Logger
+class DefaultModeLogger implements Logger
 {
 
     /**

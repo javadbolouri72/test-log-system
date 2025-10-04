@@ -11,7 +11,7 @@ use App\Services\LoggerService\DataObjects\QueryLogData;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
-class BoosterModeLogger extends Logger
+class BoosterModeLogger implements Logger
 {
 
     private const CACHE_LOG_LIST_PREFIX_KEY = "log_list:";
