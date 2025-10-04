@@ -79,7 +79,6 @@ class BoosterModeLogger extends Logger
 
     public static function persist(PersistLogData $data): void
     {
-//        $cachedLogList = self::getCachedLogList();
         // TODO: Implement persistData() method.
     }
 
@@ -106,10 +105,12 @@ class BoosterModeLogger extends Logger
      */
     private static function cacheData(string $cacheKey, array $dataArray): void
     {
+        Redis::command('MULTI');
         Redis::command('SELECT', [config('logger_service.redis_database', 1)]);
         foreach ($dataArray as $dataKey => $dataValue) {
             Redis::command('HSET', [$cacheKey, $dataKey, $dataValue]);
         }
+        Redis::command('EXEC');
     }
 
     /**
