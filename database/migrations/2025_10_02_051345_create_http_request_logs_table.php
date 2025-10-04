@@ -22,7 +22,6 @@ return new class extends Migration
             $table->text('request_headers')->nullable();
             $table->longText('request_payload')->nullable();
             $table->string('status_code', 3)->nullable();
-            $table->text('response_headers')->nullable();
             $table->longText('response_data')->nullable();
             $table->unsignedBigInteger('duration')->nullable()->comment('In milliseconds');
             $table->timestamps();

@@ -7,43 +7,117 @@ use App\Services\LoggerService\DataObjects\CommandLogData;
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
+use App\Services\LoggerService\DataObjects\PersistLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
-class BoosterModeLogger extends Logger implements Persistable
+class BoosterModeLogger extends Logger
 {
+
+    private const CACHE_LOG_LIST_PREFIX_KEY = "log_list:";
+    private const CACHE_USER_HTTP_REQUEST_LOG_PREFIX_KEY = "user_http_request_log:";
+    private const CACHE_EXTERNAL_SERVICE_LOG_PREFIX_KEY = "external_service_log";
+    private const CACHE_QUERY_LOG_PREFIX_KEY = "query_log";
+    private const CACHE_COMMAND_LOG_PREFIX_KEY = "command_log";
+    private const CACHE_EXCEPTION_LOG_PREFIX_KEY = "exception_log";
 
     public static function userHttpRequestLog(HttpRequestLogData $data): void
     {
-        // TODO: Implement userHttpRequestLog() method.
+        $dataArray = $data->toArray();
+        $traceId = $dataArray["trace_id"];
+        $postfix = self::generateUniquePostfix();
+        $cachedLogListKey = self::CACHE_LOG_LIST_PREFIX_KEY . $traceId;
+        $dataCacheKey = self::CACHE_USER_HTTP_REQUEST_LOG_PREFIX_KEY . $traceId . $postfix;
+        self::addToCachedLogList($cachedLogListKey, $dataCacheKey);
+        self::cacheData($dataCacheKey, $dataArray);
     }
 
     public static function externalServiceLog(ExternalServiceLogData $data): void
     {
-        // TODO: Implement externalServiceLog() method.
+        $dataArray = $data->toArray();
+        $traceId = $dataArray["trace_id"];
+        $postfix = self::generateUniquePostfix();
+        $cachedLogListKey = self::CACHE_LOG_LIST_PREFIX_KEY . $traceId;
+        $dataCacheKey = self::CACHE_EXTERNAL_SERVICE_LOG_PREFIX_KEY . $traceId . $postfix;
+        self::addToCachedLogList($cachedLogListKey, $dataCacheKey);
+        self::cacheData($dataCacheKey, $dataArray);
     }
 
     public static function queryLog(QueryLogData $data): void
     {
-        // TODO: Implement queryLog() method.
+        $dataArray = $data->toArray();
+        $traceId = $dataArray["trace_id"];
+        $postfix = self::generateUniquePostfix();
+        $cachedLogListKey = self::CACHE_LOG_LIST_PREFIX_KEY . $traceId;
+        $dataCacheKey = self::CACHE_QUERY_LOG_PREFIX_KEY . $traceId . $postfix;
+        self::addToCachedLogList($cachedLogListKey, $dataCacheKey);
+        self::cacheData($dataCacheKey, $dataArray);
     }
 
     public static function commandLog(CommandLogData $data): void
     {
-        // TODO: Implement commandLog() method.
+        $dataArray = $data->toArray();
+        $traceId = $dataArray["trace_id"];
+        $postfix = self::generateUniquePostfix();
+        $cachedLogListKey = self::CACHE_LOG_LIST_PREFIX_KEY . $traceId;
+        $dataCacheKey = self::CACHE_COMMAND_LOG_PREFIX_KEY . $traceId . $postfix;
+        self::addToCachedLogList($cachedLogListKey, $dataCacheKey);
+        self::cacheData($dataCacheKey, $dataArray);
     }
 
     public static function exceptionLog(ExceptionLogData $data): void
     {
-        // TODO: Implement exceptionLog() method.
+        $dataArray = $data->toArray();
+        $traceId = $dataArray["trace_id"];
+        $postfix = self::generateUniquePostfix();
+        $cachedLogListKey = self::CACHE_LOG_LIST_PREFIX_KEY . $traceId;
+        $dataCacheKey = self::CACHE_EXCEPTION_LOG_PREFIX_KEY . $traceId . $postfix;
+        self::addToCachedLogList($cachedLogListKey, $dataCacheKey);
+        self::cacheData($dataCacheKey, $dataArray);
     }
 
-    public static function finishLogSession(): void
+    public static function persist(PersistLogData $data): void
     {
-        // TODO: Implement finishLogSession() method.
-    }
-
-    public static function persistData(): void
-    {
+//        $cachedLogList = self::getCachedLogList();
         // TODO: Implement persistData() method.
+    }
+
+    private static function generateUniquePostfix(): string
+    {
+        return ":" . Str::ulid()->toString();
+    }
+
+    /**
+     * @param string $cacheKey
+     * @param string $cacheValue
+     * @return void
+     */
+    private static function addToCachedLogList(string $cacheKey, string $cacheValue): void
+    {
+        Redis::command('SELECT', [config('logger_service.redis_database', 1)]);
+        Redis::command('RPUSH', [$cacheKey, $cacheValue]);
+    }
+
+    /**
+     * @param string $cacheKey
+     * @param array $dataArray
+     * @return void
+     */
+    private static function cacheData(string $cacheKey, array $dataArray): void
+    {
+        Redis::command('SELECT', [config('logger_service.redis_database', 1)]);
+        foreach ($dataArray as $dataKey => $dataValue) {
+            Redis::command('HSET', [$cacheKey, $dataKey, $dataValue]);
+        }
+    }
+
+    /**
+     * @param string $cacheKey
+     * @return array|null
+     */
+    private static function getCachedLogList(string $cacheKey): array|null
+    {
+        return Redis::command('LRANGE', [$cacheKey, 0, -1]);
     }
 }

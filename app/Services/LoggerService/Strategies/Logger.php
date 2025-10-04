@@ -6,6 +6,7 @@ use App\Services\LoggerService\DataObjects\CommandLogData;
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
+use App\Services\LoggerService\DataObjects\PersistLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
 
 abstract class Logger
@@ -19,4 +20,6 @@ abstract class Logger
     abstract public static function commandLog(CommandLogData $data): void;
 
     abstract public static function exceptionLog(ExceptionLogData $data): void;
+    abstract public static function persist(PersistLogData $data): void;
+
 }

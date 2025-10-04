@@ -6,7 +6,9 @@ use App\Services\LoggerService\DataObjects\CommandLogData;
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
+use App\Services\LoggerService\DataObjects\PersistLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DefaultModeLogger extends Logger
@@ -37,4 +39,22 @@ class DefaultModeLogger extends Logger
         DB::connection('logging')->table('exception_logs')->insert($data->toArray());
     }
 
+    public static function persist(PersistLogData $data): void
+    {
+        $dataArray = $data->toArray();
+        $traceId = $dataArray['trace_id'];
+        $statusCode = $dataArray['status_code'];
+//        $responseData = $dataArray['response_data'];
+        $responseData = substr($dataArray['response_data'], 0, 1000);
+
+        $log = DB::connection('logging')->table('http_request_logs')
+            ->where('trace_id', $traceId)->first();
+
+        if ($log){
+            $logStartTime = Carbon::parse($log->created_at);
+            $duration = (int)$logStartTime->diffInUTCMilliseconds(Carbon::now());
+
+            DB::connection('logging')->update('update http_request_logs set status_code = ?, response_data = ?,duration = ?  where trace_id = ?', [$statusCode, $responseData, $duration, $traceId]);
+        }
+    }
 }

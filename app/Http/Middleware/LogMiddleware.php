@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
+use App\Services\LoggerService\DataObjects\PersistLogData;
 use App\Services\LoggerService\LoggerContextManager;
 use App\Services\LoggerService\Strategies\BoosterModeLogger;
 use Closure;
@@ -49,11 +50,17 @@ class LogMiddleware
     }
     public function terminate(Request $request, Response $response): void
     {
+        $traceId = request()->header('trace_id');
         $logger = LoggerContextManager::instance();
 
-        if ($logger->getStrategy() instanceof BoosterModeLogger) {
-            //Todo: make finish session data
-            $logger->getStrategy()->persistData();
-        }
+        $persistLogData = new PersistLogData();
+
+        $persistLogData->fromArray([
+            'trace_id' => $traceId,
+            'status_code' => $response->getStatusCode(),
+            'response_data' => $response->getContent(),
+        ]);
+
+        $logger->persist($persistLogData);
     }
 }

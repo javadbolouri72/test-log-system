@@ -2,6 +2,7 @@
 
 namespace App\Services\LoggerService\DataObjects;
 
+use App\Services\LoggerService\Contracts\CacheableData;
 use Carbon\Carbon;
 
 class HttpRequestLogData
@@ -16,7 +17,6 @@ class HttpRequestLogData
     private string|null $requestHeaders;
     private string|null $requestPayload;
     private string|null $statusCode;
-    private string|null $responseHeaders;
     private string|null $responseData;
     private int|null $duration;
     private Carbon $createdAt;
@@ -44,7 +44,6 @@ class HttpRequestLogData
         $this->requestHeaders = $data["request_headers"] ?? null;
         $this->requestPayload = $data["request_payload"] ?? null;
         $this->statusCode = $data["status_code"] ?? null;
-        $this->responseHeaders = $data["response_headers"] ?? null;
         $this->responseData = $data["response_data"] ?? null;
         $this->duration = $data["duration"] ?? null;
         $this->createdAt = $data["created_at"] ?? Carbon::now();
@@ -67,7 +66,6 @@ class HttpRequestLogData
             "request_headers" => $this->requestHeaders,
             "request_payload" => $this->requestPayload,
             "status_code" => $this->statusCode,
-            "response_headers" => $this->responseHeaders,
             "response_data" => $this->responseData,
             "duration" => $this->duration,
             "created_at" => $this->createdAt,

@@ -7,6 +7,7 @@ use App\Services\LoggerService\DataObjects\CommandLogData;
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
+use App\Services\LoggerService\DataObjects\PersistLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
 use App\Services\LoggerService\Factories\BoosterModeLoggerFactory;
 use App\Services\LoggerService\Factories\DefaultModeLoggerFactory;
@@ -45,13 +46,13 @@ final class LoggerContextManager
         return $this->traceId;
     }
 
-    /**
-     * @return Logger
-     */
-    public function getStrategy(): Logger
-    {
-        return $this->strategy;
-    }
+//    /**
+//     * @return Logger
+//     */
+//    public function getStrategy(): Logger
+//    {
+//        return $this->strategy;
+//    }
 
     /**
      * @return self
@@ -92,7 +93,7 @@ final class LoggerContextManager
             return App::make(self::class);
         }
 
-        $loggerMode = config('logger_service.mode');
+        $loggerMode = config('logger_service.mode', LoggerStrategy::DEFAULT_LOGGER_STRATEGY);
 
         $factory = $loggerMode === LoggerStrategy::DEFAULT_LOGGER_STRATEGY
             ? new DefaultModeLoggerFactory()
@@ -150,5 +151,14 @@ final class LoggerContextManager
     public function exceptionLog(ExceptionLogData $data): void
     {
         $this->strategy->exceptionLog($data);
+    }
+
+    /**
+     * @param string $traceId
+     * @return void
+     */
+    public function persist(PersistLogData $data): void
+    {
+        $this->strategy->persist($data);
     }
 }
