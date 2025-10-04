@@ -24,6 +24,6 @@ class CommandStartListener
     public function handle(CommandStarting $event): void
     {
         $traceId = request()->headers->has('trace_id') ? request()->headers->get('trace_id') : 'NA';
-        Cache::set("{$traceId}_command_duration_$event->command", Carbon::now());
+        Cache::set("{$traceId}_command_start_time_$event->command", Carbon::now());
     }
 }

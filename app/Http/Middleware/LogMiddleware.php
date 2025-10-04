@@ -6,8 +6,10 @@ use App\Services\LoggerService\DataObjects\HttpRequestLogData;
 use App\Services\LoggerService\DataObjects\PersistLogData;
 use App\Services\LoggerService\LoggerContextManager;
 use App\Services\LoggerService\Strategies\BoosterModeLogger;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,8 +17,8 @@ class LogMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $traceId = Str::ulid()->toString();
-        request()->headers->set('trace-id',$traceId);
+        $traceId = $this->assignTraceIdToHeaders();
+        $this->assignStartTimeToHeaders($traceId);
 
         $logger = LoggerContextManager::instance();
 
@@ -27,6 +29,32 @@ class LogMiddleware
         return $next($request);
     }
 
+    /**
+     * @return string
+     */
+    private function assignTraceIdToHeaders(): string
+    {
+        $traceId = Str::ulid()->toString();
+        request()->headers->set('trace-id',$traceId);
+        return $traceId;
+    }
+
+    /**
+     * @param string $traceId
+     * @return void
+     */
+    private function assignStartTimeToHeaders(string $traceId): void
+    {
+        $now = Carbon::now();
+        Cache::set("{$traceId}_http_request_time", $now);
+        request()->headers->set('request-start-time',$now);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $traceId
+     * @return HttpRequestLogData
+     */
     private function makeHttpRequestLogData(Request $request, string $traceId): HttpRequestLogData
     {
         $action = $request->route()->getAction();
@@ -48,17 +76,29 @@ class LogMiddleware
 
         return $httpRequestLogDataObject;
     }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
     public function terminate(Request $request, Response $response): void
     {
+        $now = Carbon::now();
         $traceId = request()->header('trace_id');
         $logger = LoggerContextManager::instance();
 
         $persistLogData = new PersistLogData();
 
+        $cachedHttpRequestStartTime = Cache::get("{$traceId}_http_request_time");
+        $commandStartedAt = Carbon::parse($cachedHttpRequestStartTime);
+        $duration = (int)$commandStartedAt->diffInUTCMilliseconds($now);
+
         $persistLogData->fromArray([
             'trace_id' => $traceId,
             'status_code' => $response->getStatusCode(),
             'response_data' => $response->getContent(),
+            'duration' => $duration,
         ]);
 
         $logger->persist($persistLogData);

@@ -79,17 +79,10 @@ class DefaultModeLogger extends Logger
             $dataArray = $data->toArray();
             $traceId = $dataArray['trace_id'];
             $statusCode = $dataArray['status_code'];
-//        $responseData = $dataArray['response_data'];
             $responseData = substr($dataArray['response_data'], 0, 1000);
+            $duration = $dataArray['duration'];
 
-            $log = DB::connection('logging')->table('http_request_logs')
-                ->where('trace_id', $traceId)->first();
-
-            if ($log){
-                $logStartTime = Carbon::parse($log->created_at);
-                $duration = (int)$logStartTime->diffInUTCMilliseconds(Carbon::now());
-                DB::connection('logging')->update('update http_request_logs set status_code = ?, response_data = ?,duration = ?  where trace_id = ?', [$statusCode, $responseData, $duration, $traceId]);
-            }
+            DB::connection('logging')->update('update http_request_logs set status_code = ?, response_data = ?,duration = ?  where trace_id = ?', [$statusCode, $responseData, $duration, $traceId]);
         } catch (\Throwable) {}
     }
 }

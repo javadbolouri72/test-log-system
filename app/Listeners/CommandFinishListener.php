@@ -27,7 +27,7 @@ class CommandFinishListener
     {
         $now = Carbon::now();
         $traceId = request()->headers->has('trace_id') ? request()->headers->get('trace_id') : 'NA';
-        $cachedCommandTime = Cache::set("{$traceId}_command_duration_$event->command", $now);
+        $cachedCommandTime = Cache::get("{$traceId}_command_start_time_$event->command");
 
         $commandStartedAt = Carbon::parse($cachedCommandTime);
         $duration = (int)$commandStartedAt->diffInUTCMilliseconds($now);
