@@ -9,6 +9,10 @@ class PersistLogData
     private int|null $duration = null;
     private string|null $responseData = null;
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function fromArray(array $data): void
     {
         $this->traceId = $data["trace_id"] ?? null;
@@ -17,6 +21,9 @@ class PersistLogData
         $this->duration = $data["duration"] ?? null;
     }
 
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         return [

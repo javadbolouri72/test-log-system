@@ -20,6 +20,9 @@ class ExternalServiceLogData
     private Carbon $createdAt;
     private Carbon $updatedAt;
 
+    /**
+     * @return void
+     */
     public function __clone()
     {
         $this->createdAt = clone $this->createdAt;
