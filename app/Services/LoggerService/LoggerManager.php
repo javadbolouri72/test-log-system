@@ -34,11 +34,7 @@ readonly class LoggerManager
             return App::make(self::class . self::GLOBAL_POSTFIX);
         }
 
-        $loggerMode = config('logger_service.mode');
-
-        $factory = $loggerMode === LoggerStrategy::DEFAULT_LOGGER_STRATEGY
-            ? new DefaultModeLoggerFactory()
-            : new BoosterModeLoggerFactory();
+        $factory = new DefaultModeLoggerFactory();
 
         $loggerStrategy = $factory->makeInstance();
 
