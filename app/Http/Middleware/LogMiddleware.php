@@ -23,7 +23,7 @@ class LogMiddleware
         $traceId = Str::ulid()->toString();
         request()->headers->set('trace-id',$traceId);
 
-        $logger = LoggerManager::makeInstance();
+        $logger = LoggerManager::instance();
 
         $logDataObject = $this->makeHttpRequestLogData($request, $traceId);
 
@@ -55,7 +55,7 @@ class LogMiddleware
     }
     public function terminate(Request $request, Response $response): void
     {
-        $logger = LoggerManager::makeInstance();
+        $logger = LoggerManager::instance();
 
         //Todo: make finish session data
 

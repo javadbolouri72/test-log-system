@@ -43,7 +43,7 @@ class LoggerServiceProvider extends ServiceProvider
 
                         function (ResponseInterface $response) use ($request, $startTime) {
 
-                            $logger = LoggerManager::makeInstance();
+                            $logger = LoggerManager::instance();
 
                             $externalServiceLogDataObject = new ExternalServiceLogData();
 
@@ -87,7 +87,7 @@ class LoggerServiceProvider extends ServiceProvider
                 }
             }
 
-            $logger = LoggerManager::makeInstance();
+            $logger = LoggerManager::instance();
 
             $queryLogDataObject = new QueryLogData();
 

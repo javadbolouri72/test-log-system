@@ -32,7 +32,7 @@ class CommandFinishListener
         $commandStartedAt = Carbon::parse($cachedCommandTime);
         $duration = (int)$commandStartedAt->diffInUTCMilliseconds($now);
 
-        $logger = LoggerManager::makeInstance();
+        $logger = LoggerManager::instance();
 
         $commandLogDataObject = new CommandLogData();
 

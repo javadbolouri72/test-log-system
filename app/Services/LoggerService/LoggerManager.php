@@ -16,11 +16,40 @@ use Illuminate\Support\Str;
 
 readonly class LoggerManager
 {
+    private const GLOBAL_POSTFIX = ":Global";
     public function __construct(
         private Logger $strategy
     ) {}
 
-    public static function makeInstance(): self
+    public static function instance(): self
+    {
+        return (request()->header('trace-id') === null)
+            ? self::globalInstance()
+            : self::requestUniqueInstance();
+    }
+
+    private static function globalInstance(): self
+    {
+        if (App::bound(self::class . self::GLOBAL_POSTFIX)) {
+            return App::make(self::class . self::GLOBAL_POSTFIX);
+        }
+
+        $loggerMode = config('logger_service.mode');
+
+        $factory = $loggerMode === LoggerStrategy::DEFAULT_LOGGER_STRATEGY
+            ? new DefaultModeLoggerFactory()
+            : new BoosterModeLoggerFactory();
+
+        $loggerStrategy = $factory->makeInstance();
+
+        if (!App::bound(self::class . self::GLOBAL_POSTFIX)) {
+            App::singleton(self::class . self::GLOBAL_POSTFIX, fn () => new self($loggerStrategy));
+        }
+
+        return App::make(self::class . self::GLOBAL_POSTFIX);
+    }
+
+    private static function requestUniqueInstance(): self
     {
         if (App::bound(self::class)) {
             return App::make(self::class);
