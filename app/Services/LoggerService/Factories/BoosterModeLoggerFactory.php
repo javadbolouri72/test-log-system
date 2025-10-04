@@ -12,7 +12,7 @@ class BoosterModeLoggerFactory extends LoggerFactory
      */
     protected function createLoggerClass(): Logger
     {
-        return new BoosterModeLogger($this->traceId);
+        return new BoosterModeLogger();
     }
 
     /**

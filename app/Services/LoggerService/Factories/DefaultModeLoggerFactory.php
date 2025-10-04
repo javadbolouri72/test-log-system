@@ -12,7 +12,7 @@ class DefaultModeLoggerFactory extends LoggerFactory
      */
     protected function createLoggerClass(): Logger
     {
-        return new DefaultModeLogger($this->traceId);
+        return new DefaultModeLogger();
     }
 
     /**

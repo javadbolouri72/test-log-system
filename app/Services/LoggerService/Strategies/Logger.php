@@ -10,12 +10,6 @@ use App\Services\LoggerService\DataObjects\QueryLogData;
 
 abstract class Logger
 {
-    private static ?string $traceId;
-
-    public function __construct(?string $traceId)
-    {
-        self::$traceId = $traceId;
-    }
     abstract public static function userHttpRequestLog(HttpRequestLogData $data): void;
 
     abstract public static function externalServiceLog(ExternalServiceLogData $data): void;

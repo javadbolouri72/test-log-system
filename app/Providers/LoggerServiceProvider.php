@@ -6,7 +6,6 @@ use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
 use App\Services\LoggerService\LoggerManager;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
@@ -76,23 +75,30 @@ class LoggerServiceProvider extends ServiceProvider
 
         });
 
-//        DB::listen(function ($query) {
-////            if(App::bound(LoggerManager::class)){
-//
-//                $logger = LoggerManager::makeInstance();
-//
-//                $queryLogDataObject = new QueryLogData();
-//
-//                $queryLogDataObject->fromArray([
-//                    'trace_id' => request()->header('trace_id'),
-//                    'user_id' => request()->user()?->id,
-//                    'query' => $query->sql,
-//                    'duration' => $query->time,
-//                ]);
-//
-//                $logger->queryLog($queryLogDataObject);
-////            }
-//
-//        });
+        DB::listen(function ($query) {
+
+            if ($query->connectionName === 'logging') {
+                return;
+            }
+
+            foreach (['sessions', 'cache', 'jobs', 'migrations'] as $ignoredTable) {
+                if (str_contains($query->sql, $ignoredTable)) {
+                    return;
+                }
+            }
+
+            $logger = LoggerManager::makeInstance();
+
+            $queryLogDataObject = new QueryLogData();
+
+            $queryLogDataObject->fromArray([
+                'trace_id' => request()->header('trace_id'),
+                'user_id' => request()->user()?->id,
+                'query' => $query->sql,
+                'duration' => $query->time,
+            ]);
+
+            $logger->queryLog($queryLogDataObject);
+        });
     }
 }

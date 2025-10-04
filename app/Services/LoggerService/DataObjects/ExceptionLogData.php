@@ -7,7 +7,7 @@ use Carbon\Carbon;
 class ExceptionLogData
 {
     private int|null $id = null;
-    private string $traceId;
+    private string|null $traceId = null;
     private int|null $userId = null;
     private string $exception;
     private string $trace;
@@ -29,7 +29,7 @@ class ExceptionLogData
     public function fromArray(array $data): void
     {
         $this->id = $data["id"] ?? null;
-        $this->traceId = $data["trace_id"];
+        $this->traceId = $data["trace_id"] ?? null;
         $this->userId = $data["user_id"] ?? null;
         $this->exception = $data["exception"];
         $this->trace = $data["trace"];

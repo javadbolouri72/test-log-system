@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\App;
 abstract class LoggerFactory
 {
     /**
-     * @param string|null $traceId
-     */
-    public function __construct(readonly protected ?string $traceId){}
-
-    /**
      * @return Logger
      */
     final public function makeInstance(): Logger

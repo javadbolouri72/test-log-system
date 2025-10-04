@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class CommandLogData
 {
     private int|null $id = null;
-    private string $traceId;
+    private string|null $traceId = null;
     private int|null $userId = null;
     private string $command;
     private int $duration;
@@ -28,7 +28,7 @@ class CommandLogData
     public function fromArray(array $data): void
     {
         $this->id = $data["id"] ?? null;
-        $this->traceId = $data["trace_id"];
+        $this->traceId = $data["trace_id"] ?? null;
         $this->userId = $data["user_id"] ?? null;
         $this->command = $data["command"];
         $this->duration = $data["duration"];

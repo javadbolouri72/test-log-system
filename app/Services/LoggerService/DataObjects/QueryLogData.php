@@ -7,7 +7,7 @@ use Carbon\Carbon;
 class QueryLogData
 {
     private int|null $id = null;
-    private string $traceId;
+    private string|null $traceId = null;
     private int|null $userId = null;
     private string $query;
     private int $duration;
@@ -27,7 +27,7 @@ class QueryLogData
     public function fromArray(array $data): void
     {
         $this->id = $data["id"] ?? null;
-        $this->traceId = $data["trace_id"];
+        $this->traceId = $data["trace_id"] ?? null;
         $this->userId = $data["user_id"] ?? null;
         $this->query = $data["query"];
         $this->duration = $data["duration"];

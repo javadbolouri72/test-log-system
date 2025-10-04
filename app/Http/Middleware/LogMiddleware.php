@@ -38,20 +38,6 @@ class LogMiddleware
 
         $controller = isset($action['controller']) ? $action["controller"] : 'NA';
 
-        //Todo: Ettefaghe ajib ro check kon chera injoori kar nemikone :)
-//        return (new HttpRequestLogData())->fromArray([
-//            'trace_id' => $traceId,
-//            'user_id' => $request->user()?->id,
-//            'url' => $request->route()->uri(),
-//            'method' => $request->method(),
-//            'action' => $controller,
-//            'ip' => $request->ip(),
-//            'request_headers' => json_encode($request->headers->all(), JSON_UNESCAPED_UNICODE),
-//            'request_payload' => json_encode($request->all(), JSON_UNESCAPED_UNICODE),
-//            'created_at' => $now,
-//            'updated_at' => $now,
-//        ]);
-
         $httpRequestLogDataObject = new HttpRequestLogData();
 
         $httpRequestLogDataObject->fromArray([
@@ -69,16 +55,10 @@ class LogMiddleware
     }
     public function terminate(Request $request, Response $response): void
     {
-        if (App::bound(LoggerManager::class)) {
+        $logger = LoggerManager::makeInstance();
 
-            $logger = LoggerManager::makeInstance();
+        //Todo: make finish session data
 
-            //Todo: Make data object class and update response in db
-            $logger->finishLogSession();
-
-            App::forgetInstance(LoggerManager::class); //Todo: Test kon bebin kar mikone?
-            App::forgetInstance(DefaultModeLogger::class); //Todo: Test kon bebin kar mikone?
-            App::forgetInstance(BoosterModeLogger::class); //Todo: Test kon bebin kar mikone?
-        }
+        $logger->finishLogSession();
     }
 }

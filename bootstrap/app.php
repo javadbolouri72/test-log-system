@@ -16,8 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (Exception $exception) {
-
+        $exceptions->report(function (\Throwable $exception) {
             $logger = LoggerManager::makeInstance();
 
             $exceptionLogDataObject = new ExceptionLogData();
@@ -30,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
             ]);
-//
+
             $logger->exceptionLog($exceptionLogDataObject);
         });
     })->create();

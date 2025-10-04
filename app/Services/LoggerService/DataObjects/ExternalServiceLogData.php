@@ -7,7 +7,7 @@ use Carbon\Carbon;
 class ExternalServiceLogData
 {
     private int|null $id = null;
-    private string $traceId;
+    private string|null $traceId = null;
     private int|null $userId = null;
     private string $url;
     private string $method;
@@ -33,7 +33,7 @@ class ExternalServiceLogData
     public function fromArray(array $data): void
     {
         $this->id = $data["id"] ?? null;
-        $this->traceId = $data["trace_id"];
+        $this->traceId = $data["trace_id"] ?? null;
         $this->userId = $data["user_id"] ?? null;
         $this->url = $data["url"];
         $this->method = $data["method"];

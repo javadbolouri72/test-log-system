@@ -12,7 +12,6 @@ use App\Services\LoggerService\Factories\BoosterModeLoggerFactory;
 use App\Services\LoggerService\Factories\DefaultModeLoggerFactory;
 use App\Services\LoggerService\Strategies\Logger;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 readonly class LoggerManager
@@ -23,19 +22,15 @@ readonly class LoggerManager
 
     public static function makeInstance(): self
     {
-        $traceId = request()->header('trace-id');
-
-        if (empty($traceId)) {
-            $traceId = Str::ulid()->toString();
+        if (App::bound(self::class)) {
+            return App::make(self::class);
         }
 
         $loggerMode = config('logger_service.mode');
 
-        if ($loggerMode === LoggerStrategy::DEFAULT_LOGGER_STRATEGY) {
-            $factory = new DefaultModeLoggerFactory($traceId);
-        } else {
-            $factory = new BoosterModeLoggerFactory($traceId);
-        }
+        $factory = $loggerMode === LoggerStrategy::DEFAULT_LOGGER_STRATEGY
+            ? new DefaultModeLoggerFactory()
+            : new BoosterModeLoggerFactory();
 
         $loggerStrategy = $factory->makeInstance();
 
@@ -43,12 +38,7 @@ readonly class LoggerManager
             App::singleton(self::class, fn () => new self($loggerStrategy));
         }
 
-        /**
-         * @var self $logger
-         */
-        $logger = App::make(self::class);
-
-        return $logger;
+        return App::make(self::class);
     }
 
     public function userHttpRequestLog(HttpRequestLogData $data): void
