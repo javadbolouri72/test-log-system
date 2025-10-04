@@ -14,47 +14,82 @@ use Illuminate\Support\Facades\DB;
 class DefaultModeLogger extends Logger
 {
 
+    /**
+     * @param HttpRequestLogData $data
+     * @return void
+     */
     public static function userHttpRequestLog(HttpRequestLogData $data): void
     {
-        DB::connection('logging')->table('http_request_logs')->insert($data->toArray());
+        try {
+            DB::connection('logging')->table('http_request_logs')->insert($data->toArray());
+        } catch (\Throwable) {}
     }
 
+    /**
+     * @param ExternalServiceLogData $data
+     * @return void
+     */
     public static function externalServiceLog(ExternalServiceLogData $data): void
     {
-        DB::connection('logging')->table('external_service_logs')->insert($data->toArray());
+        try {
+            DB::connection('logging')->table('external_service_logs')->insert($data->toArray());
+        } catch (\Throwable) {}
     }
 
+    /**
+     * @param QueryLogData $data
+     * @return void
+     */
     public static function queryLog(QueryLogData $data): void
     {
-        DB::connection('logging')->table('query_logs')->insert($data->toArray());
+        try {
+            DB::connection('logging')->table('query_logs')->insert($data->toArray());
+        } catch (\Throwable) {}
     }
 
+    /**
+     * @param CommandLogData $data
+     * @return void
+     */
     public static function commandLog(CommandLogData $data): void
     {
-        DB::connection('logging')->table('command_logs')->insert($data->toArray());
+        try {
+            DB::connection('logging')->table('command_logs')->insert($data->toArray());
+        } catch (\Throwable) {}
     }
 
+    /**
+     * @param ExceptionLogData $data
+     * @return void
+     */
     public static function exceptionLog(ExceptionLogData $data): void
     {
-        DB::connection('logging')->table('exception_logs')->insert($data->toArray());
+        try {
+            DB::connection('logging')->table('exception_logs')->insert($data->toArray());
+        } catch (\Throwable) {}
     }
 
+    /**
+     * @param PersistLogData $data
+     * @return void
+     */
     public static function persist(PersistLogData $data): void
     {
-        $dataArray = $data->toArray();
-        $traceId = $dataArray['trace_id'];
-        $statusCode = $dataArray['status_code'];
+        try {
+            $dataArray = $data->toArray();
+            $traceId = $dataArray['trace_id'];
+            $statusCode = $dataArray['status_code'];
 //        $responseData = $dataArray['response_data'];
-        $responseData = substr($dataArray['response_data'], 0, 1000);
+            $responseData = substr($dataArray['response_data'], 0, 1000);
 
-        $log = DB::connection('logging')->table('http_request_logs')
-            ->where('trace_id', $traceId)->first();
+            $log = DB::connection('logging')->table('http_request_logs')
+                ->where('trace_id', $traceId)->first();
 
-        if ($log){
-            $logStartTime = Carbon::parse($log->created_at);
-            $duration = (int)$logStartTime->diffInUTCMilliseconds(Carbon::now());
-
-            DB::connection('logging')->update('update http_request_logs set status_code = ?, response_data = ?,duration = ?  where trace_id = ?', [$statusCode, $responseData, $duration, $traceId]);
-        }
+            if ($log){
+                $logStartTime = Carbon::parse($log->created_at);
+                $duration = (int)$logStartTime->diffInUTCMilliseconds(Carbon::now());
+                DB::connection('logging')->update('update http_request_logs set status_code = ?, response_data = ?,duration = ?  where trace_id = ?', [$statusCode, $responseData, $duration, $traceId]);
+            }
+        } catch (\Throwable) {}
     }
 }

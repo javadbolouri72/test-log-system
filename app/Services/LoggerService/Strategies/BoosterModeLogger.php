@@ -2,7 +2,6 @@
 
 namespace App\Services\LoggerService\Strategies;
 
-use App\Services\LoggerService\Contracts\Persistable;
 use App\Services\LoggerService\DataObjects\CommandLogData;
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
@@ -22,6 +21,10 @@ class BoosterModeLogger extends Logger
     private const CACHE_COMMAND_LOG_PREFIX_KEY = "command_log";
     private const CACHE_EXCEPTION_LOG_PREFIX_KEY = "exception_log";
 
+    /**
+     * @param HttpRequestLogData $data
+     * @return void
+     */
     public static function userHttpRequestLog(HttpRequestLogData $data): void
     {
         $dataArray = $data->toArray();
@@ -33,6 +36,10 @@ class BoosterModeLogger extends Logger
         self::cacheData($dataCacheKey, $dataArray);
     }
 
+    /**
+     * @param ExternalServiceLogData $data
+     * @return void
+     */
     public static function externalServiceLog(ExternalServiceLogData $data): void
     {
         $dataArray = $data->toArray();
@@ -44,6 +51,10 @@ class BoosterModeLogger extends Logger
         self::cacheData($dataCacheKey, $dataArray);
     }
 
+    /**
+     * @param QueryLogData $data
+     * @return void
+     */
     public static function queryLog(QueryLogData $data): void
     {
         $dataArray = $data->toArray();
@@ -55,6 +66,10 @@ class BoosterModeLogger extends Logger
         self::cacheData($dataCacheKey, $dataArray);
     }
 
+    /**
+     * @param CommandLogData $data
+     * @return void
+     */
     public static function commandLog(CommandLogData $data): void
     {
         $dataArray = $data->toArray();
@@ -66,6 +81,10 @@ class BoosterModeLogger extends Logger
         self::cacheData($dataCacheKey, $dataArray);
     }
 
+    /**
+     * @param ExceptionLogData $data
+     * @return void
+     */
     public static function exceptionLog(ExceptionLogData $data): void
     {
         $dataArray = $data->toArray();
@@ -77,11 +96,18 @@ class BoosterModeLogger extends Logger
         self::cacheData($dataCacheKey, $dataArray);
     }
 
+    /**
+     * @param PersistLogData $data
+     * @return void
+     */
     public static function persist(PersistLogData $data): void
     {
         // TODO: Implement persistData() method.
     }
 
+    /**
+     * @return string
+     */
     private static function generateUniquePostfix(): string
     {
         return ":" . Str::ulid()->toString();

@@ -46,14 +46,6 @@ final class LoggerContextManager
         return $this->traceId;
     }
 
-//    /**
-//     * @return Logger
-//     */
-//    public function getStrategy(): Logger
-//    {
-//        return $this->strategy;
-//    }
-
     /**
      * @return self
      */
@@ -154,7 +146,7 @@ final class LoggerContextManager
     }
 
     /**
-     * @param string $traceId
+     * @param PersistLogData $data
      * @return void
      */
     public function persist(PersistLogData $data): void

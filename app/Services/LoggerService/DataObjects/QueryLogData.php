@@ -2,7 +2,6 @@
 
 namespace App\Services\LoggerService\DataObjects;
 
-use App\Services\LoggerService\Contracts\CacheableData;
 use Carbon\Carbon;
 
 class QueryLogData

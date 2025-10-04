@@ -26,7 +26,7 @@ class LoggerServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap services.
+     * @return void
      */
     public function boot(): void
     {
@@ -81,7 +81,7 @@ class LoggerServiceProvider extends ServiceProvider
                 return;
             }
 
-            foreach (['sessions', 'cache', 'jobs', 'migrations'] as $ignoredTable) {
+            foreach (['sessions', 'cache', 'jobs', 'migrations', 'create table', 'alter table'] as $ignoredTable) {
                 if (str_contains($query->sql, $ignoredTable)) {
                     return;
                 }
