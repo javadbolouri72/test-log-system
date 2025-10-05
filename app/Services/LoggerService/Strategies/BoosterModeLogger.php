@@ -16,10 +16,10 @@ class BoosterModeLogger implements Logger
 
     private const CACHE_LOG_LIST_PREFIX_KEY = "log_list:";
     private const CACHE_USER_HTTP_REQUEST_LOG_PREFIX_KEY = "user_http_request_log:";
-    private const CACHE_EXTERNAL_SERVICE_LOG_PREFIX_KEY = "external_service_log";
-    private const CACHE_QUERY_LOG_PREFIX_KEY = "query_log";
-    private const CACHE_COMMAND_LOG_PREFIX_KEY = "command_log";
-    private const CACHE_EXCEPTION_LOG_PREFIX_KEY = "exception_log";
+    private const CACHE_EXTERNAL_SERVICE_LOG_PREFIX_KEY = "external_service_log:";
+    private const CACHE_QUERY_LOG_PREFIX_KEY = "query_log:";
+    private const CACHE_COMMAND_LOG_PREFIX_KEY = "command_log:";
+    private const CACHE_EXCEPTION_LOG_PREFIX_KEY = "exception_log:";
 
     /**
      * @param HttpRequestLogData $data
