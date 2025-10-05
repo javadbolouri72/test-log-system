@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
-use App\Services\LoggerService\DataObjects\PersistLogData;
+use App\Services\LoggerService\DataObjects\PersistData;
 use App\Services\LoggerService\LoggerContextManager;
 use App\Services\LoggerService\Strategies\BoosterModeLogger;
 use Carbon\Carbon;
@@ -88,7 +88,7 @@ class LogMiddleware
         $traceId = request()->header('trace_id');
         $logger = LoggerContextManager::instance();
 
-        $persistLogData = new PersistLogData();
+        $persistLogData = new PersistData();
 
         $cachedHttpRequestStartTime = Cache::get("{$traceId}_http_request_time");
         $commandStartedAt = Carbon::parse($cachedHttpRequestStartTime);

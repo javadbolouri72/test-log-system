@@ -6,7 +6,7 @@ use App\Services\LoggerService\DataObjects\CommandLogData;
 use App\Services\LoggerService\DataObjects\ExceptionLogData;
 use App\Services\LoggerService\DataObjects\ExternalServiceLogData;
 use App\Services\LoggerService\DataObjects\HttpRequestLogData;
-use App\Services\LoggerService\DataObjects\PersistLogData;
+use App\Services\LoggerService\DataObjects\PersistData;
 use App\Services\LoggerService\DataObjects\QueryLogData;
 use Illuminate\Support\Facades\DB;
 
@@ -69,10 +69,10 @@ class DefaultModeLogger implements Logger
     }
 
     /**
-     * @param PersistLogData $data
+     * @param PersistData $data
      * @return void
      */
-    public static function persist(PersistLogData $data): void
+    public static function persist(PersistData $data): void
     {
         try {
             $dataArray = $data->toArray();

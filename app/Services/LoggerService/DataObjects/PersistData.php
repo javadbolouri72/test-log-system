@@ -2,7 +2,7 @@
 
 namespace App\Services\LoggerService\DataObjects;
 
-class PersistLogData
+class PersistData
 {
     private string|null $traceId = null;
     private int|null $statusCode = null;
