@@ -81,8 +81,8 @@ class LoggerServiceProvider extends ServiceProvider
                 return;
             }
 
-            foreach (['sessions', 'cache', 'jobs', 'migrations', 'create table', 'alter table'] as $ignoredTable) {
-                if (str_contains($query->sql, $ignoredTable)) {
+            foreach (['sessions', 'cache', 'jobs', 'migrations', 'create table', 'alter table'] as $ignoredList) {
+                if (str_contains($query->sql, $ignoredList)) {
                     return;
                 }
             }
